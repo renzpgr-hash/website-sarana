@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SARPRAS DIGITAL — Sistem Informasi Sarana & Prasarana Sekolah</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            200: '#bae0fd',
+                            300: '#7cc7fc',
+                            400: '#38aaf8',
+                            500: '#0e8fe9',
+                            600: '#0271c7',
+                            700: '#035aa1',
+                            800: '#074d85',
+                            900: '#0c416e',
+                            950: '#082949',
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(14, 143, 233, 0.12)',
+                        'card': '0 4px 24px -2px rgba(15, 23, 42, 0.04)',
+                        '3d-icon': '0 20px 35px -5px rgba(2, 113, 199, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.6)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Latar belakang gradien lembut seperti referensi */
+        .hero-bg {
+            background: radial-gradient(circle at 85% 20%, rgba(186, 224, 253, 0.45) 0%, rgba(240, 247, 255, 0.8) 45%, #ffffff 100%);
+        }
+        .section-bg-soft {
+            background: linear-gradient(180deg, #f4f9ff 0%, #eaf4ff 50%, #f8fbff 100%);
+        }
+        /* Animasi melayang halus untuk elemen 3D */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(-6deg); }
+            50% { transform: translateY(-10px) rotate(-4deg); }
+        }
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+        .animate-float-3d {
+            animation: float 5s ease-in-out infinite;
+        }
+        .animate-float-badge {
+            animation: floatSlow 4s ease-in-out infinite;
+        }
+        .animate-float-badge-delay {
+            animation: floatSlow 4.5s ease-in-out 1.5s infinite;
+        }
+        /* Pola garis orbit melingkar di belakang ikon utama */
+        .orbit-ring {
+            border: 1.5px dashed rgba(56, 170, 248, 0.35);
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="bg-white text-slate-800 antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- ==================== HEADER / NAVBAR ==================== -->
+    <header class="sticky top-0 z-40 bg-white/85 backdrop-blur-md border-b border-slate-100">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between py-3.5 gap-3">
+                
+                <!-- Identitas Sekolah & Logo -->
+                <div class="flex items-center justify-between">
+                    <a href="#beranda" class="flex items-center gap-3 group">
+                        <!-- Logo Sekolah SVG -->
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-brand-700 to-brand-400 p-0.5 shadow-sm flex items-center justify-center shrink-0">
+                            <div class="w-full h-full bg-white rounded-full flex items-center justify-center">
+                                <i data-lucide="graduation-cap" class="w-5 h-5 text-brand-600"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="block font-display font-extrabold text-sm sm:text-base tracking-tight text-slate-900 leading-tight group-hover:text-brand-600 transition-colors">
+                                SARPRAS DIGITAL SEKOLAH
+                            </span>
+                            <span class="block text-[11px] font-medium text-slate-500">
+                                Portal Sarana &amp; Prasarana Terpadu
+                            </span>
+                        </div>
+                        <!-- Badge Sekunder -->
+                        <div class="hidden sm:flex w-9 h-9 rounded-xl bg-amber-50 border border-amber-200/70 items-center justify-center ml-1 shadow-xs" title="Terakreditasi A">
+                            <i data-lucide="building-2" class="w-4 h-4 text-amber-600"></i>
+                        </div>
+                    </a>
+
+                    <!-- Tombol Menu Mobile -->
+                    <button id="mobileMenuBtn" class="md:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100 focus:outline-none">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+
+                <!-- Navigasi Desktop -->
+                <nav class="hidden md:flex items-center gap-6 text-xs font-semibold text-slate-600">
+                    <a href="#beranda" class="text-brand-600 hover:text-brand-700 transition-colors">Beranda</a>
+                    <a href="#laporan-publik" class="hover:text-brand-600 transition-colors">Laporan Publik</a>
+                    <a href="#tentang" class="hover:text-brand-600 transition-colors">Tentang</a>
+                    <a href="#form-sarpras" class="hover:text-brand-600 transition-colors">Form Pengajuan</a>
+                    <button onclick="openAdminModal()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-slate-200/90 text-slate-800 hover:border-brand-300 hover:text-brand-600 shadow-2xs transition-all cursor-pointer">
+                        <i data-lucide="shield-check" class="w-3.5 h-3.5 text-brand-600"></i>
+                        <span>Login Admin</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Navigasi Mobile Dropdown -->
+            <div id="mobileMenu" class="hidden md:hidden pb-4 pt-2 border-t border-slate-100 space-y-2">
+                <a href="#beranda" class="block px-3 py-2 rounded-lg text-sm font-semibold text-brand-600 bg-brand-50/60">Beranda</a>
+                <a href="#laporan-publik" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50">Laporan Publik</a>
+                <a href="#tentang" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50">Tentang</a>
+                <a href="#form-sarpras" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50">Form Pengajuan</a>
+                <button onclick="openAdminModal()" class="w-full mt-2 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-semibold">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i>
+                    <span>Login Admin Sarpras</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== HERO SECTION ==================== -->
+    <section id="beranda" class="hero-bg relative overflow-hidden pt-10 pb-20 sm:pt-16 sm:pb-24">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+                
+                <!-- Kolom Kiri: Copywriting Utama -->
+                <div class="lg:col-span-7 text-left space-y-6">
+                    <!-- Pill Badge Atas -->
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-50 border border-brand-200/70 text-brand-700 text-xs font-semibold">
+                        <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                        <span>LAYANAN SARPRAS DIGITAL SEKOLAH</span>
+                    </div>
+
+                    <!-- Headline Besar Bertingkat (Sesuai Referensi) -->
+                    <h1 class="font-display font-extrabold text-4xl sm:text-5xl lg:text-[54px] tracking-tight leading-[1.12] text-slate-900">
+                        Satu Laporan,<br>
+                        <span class="bg-gradient-to-r from-brand-500 to-brand-700 bg-clip-text text-transparent">
+                            Fasilitas Nyaman.
+                        </span>
+                    </h1>
+
+                    <!-- Deskripsi Singkat -->
+                    <p class="text-slate-600 text-sm sm:text-base leading-relaxed max-w-xl">
+                        Ide dan laporan Anda menjadi awal peningkatan kualitas belajar. Sampaikan keluhan kerusakan, pengajuan alat praktik, maupun saran fasilitas sekolah secara transparan dan terukur.
+                    </p>
+
+                    <!-- Tombol CTA Utama & Sekunder -->
+                    <div class="flex flex-wrap items-center gap-3.5 pt-1">
+                        <a href="#form-sarpras" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-brand-400 to-brand-600 hover:from-brand-500 hover:to-brand-700 text-white font-semibold text-sm shadow-soft transition-all transform hover:-translate-y-0.5">
+                            <span>Ajukan Sarpras</span>
+                            <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                        </a>
+                        <a href="#laporan-publik" class="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 font-semibold text-sm border border-slate-200/90 shadow-2xs transition-all">
+                            <span>Lihat Progres</span>
+                        </a>
+                    </div>
+
+                    <!-- Keterangan Status -->
+                    <div class="flex items-center gap-2 text-xs text-slate-500 pt-1">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        <span>Terbuka untuk seluruh siswa, guru, dan staf tata usaha sekolah.</span>
+                    </div>
+                </div>
+
+                <!-- Kolom Kanan: Visual Ikon 3D + Kartu Melayang (Sesuai Referensi) -->
+                <div class="lg:col-span-5 relative flex items-center justify-center py-8 sm:py-12">
+                    <!-- Lingkaran Orbit Latar -->
+                    <div class="orbit-ring w-64 h-64 sm:w-72 sm:h-72 absolute"></div>
+                    <div class="orbit-ring w-80 h-80 sm:w-96 sm:h-96 absolute opacity-60"></div>
+
+                    <!-- Kartu Melayang Kiri Atas: Fasilitas Terawat -->
+                    <div class="animate-float-badge absolute top-2 left-2 sm:left-4 z-20 bg-white/95 backdrop-blur-md px-3.5 py-2.5 rounded-2xl shadow-card border border-slate-100 flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center shrink-0">
+                            <i data-lucide="wrench" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-800 leading-tight">Perawatan Cepat</p>
+                            <p class="text-[10px] text-slate-500">Respon tim teknisi &amp; sarpras</p>
+                        </div>
+                    </div>
+
+                    <!-- Ikon Utama 3D Squircle Biru ("S+") -->
+                    <div class="animate-float-3d relative z-10 w-40 h-40 sm:w-44 sm:h-44 rounded-[36px] bg-gradient-to-br from-brand-300 via-brand-500 to-brand-700 shadow-3d-icon flex items-center justify-center border border-white/40">
+                        <!-- Kilau Kaca Atas -->
+                        <div class="absolute inset-x-3 top-2 h-1/2 rounded-t-[28px] bg-gradient-to-b from-white/35 to-transparent pointer-events-none"></div>
+                        <div class="relative flex items-start text-white font-display font-extrabold select-none">
+                            <span class="text-6xl sm:text-7xl tracking-tighter drop-shadow-sm">S</span>
+                            <span class="text-2xl sm:text-3xl text-amber-300 -ml-0.5 mt-1 drop-shadow-sm">+</span>
+                        </div>
+                    </div>
+
+                    <!-- Kartu Melayang Kanan Bawah: Transparan -->
+                    <div class="animate-float-badge-delay absolute bottom-2 right-2 sm:right-4 z-20 bg-white/95 backdrop-blur-md px-3.5 py-2.5 rounded-2xl shadow-card border border-slate-100 flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 text-brand-300"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-800 leading-tight">Terpantau Jelas</p>
+                            <p class="text-[10px] text-slate-500">Status perbaikan real-time</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Indikator Scroll Bawah -->
+            <div class="mt-10 text-center">
+                <a href="#laporan-publik" class="inline-flex flex-col items-center gap-1 text-[10px] font-bold tracking-[0.2em] text-slate-400 hover:text-brand-600 uppercase transition-colors">
+                    <span>Gulir untuk jelajahi</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 animate-bounce"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SECTION LAPORAN & ASPIRASI PUBLIK ==================== -->
+    <section id="laporan-publik" class="section-bg-soft py-16 sm:py-20 border-t border-brand-100/60">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Header Section -->
+            <div class="mb-8">
+                <div class="inline-flex items-center gap-1.5 text-[11px] font-bold tracking-wider uppercase text-brand-600 mb-2">
+                    <i data-lucide="activity" class="w-3.5 h-3.5"></i>
+                    <span>Transparansi Sarana &amp; Prasarana</span>
+                </div>
+                <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-slate-900 tracking-tight">
+                    Laporan <span class="text-brand-500">Publik</span>
+                </h2>
+                <p class="text-slate-600 text-sm mt-2 max-w-2xl">
+                    Pantau laporan kerusakan maupun usulan fasilitas yang telah diverifikasi dan sedang ditindaklanjuti oleh tim Waka Sarpras.
+                </p>
+            </div>
+
+            <!-- Kartu Counter Statistik (Mirip Kotak Angka "0" di Referensi, tapi interaktif) -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                <div class="bg-white rounded-2xl p-5 border border-slate-200/70 shadow-card flex items-center justify-between">
+                    <div>
+                        <span id="statTotal" class="block font-display font-extrabold text-3xl text-brand-600">3</span>
+                        <span class="text-xs font-medium text-slate-500 mt-0.5 block">Laporan Terverifikasi</span>
+                    </div>
+                    <div class="w-11 h-11 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center">
+                        <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl p-5 border border-slate-200/70 shadow-card flex items-center justify-between">
+                    <div>
+                        <span id="statProses" class="block font-display font-extrabold text-3xl text-amber-500">2</span>
+                        <span class="text-xs font-medium text-slate-500 mt-0.5 block">Dalam Pengerjaan</span>
+                    </div>
+                    <div class="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
+                        <i data-lucide="hammer" class="w-5 h-5"></i>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl p-5 border border-slate-200/70 shadow-card flex items-center justify-between">
+                    <div>
+                        <span id="statSelesai" class="block font-display font-extrabold text-3xl text-emerald-600">1</span>
+                        <span class="text-xs font-medium text-slate-500 mt-0.5 block">Selesai Diperbaiki</span>
+                    </div>
+                    <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                        <i data-lucide="check-circle" class="w-5 h-5"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Baris Filter & Tombol Perbarui -->
+            <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="text-xs text-slate-500 mr-1">Filter Status:</span>
+                    <button onclick="filterReports('all')" data-filter="all" class="filter-btn active px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-brand-600 text-white shadow-2xs transition-all cursor-pointer">
+                        Semua
+                    </button>
+                    <button onclick="filterReports('Diproses')" data-filter="Diproses" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:border-brand-300 transition-all cursor-pointer">
+                        Diproses
+                    </button>
+                    <button onclick="filterReports('Selesai')" data-filter="Selesai" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:border-brand-300 transition-all cursor-pointer">
+                        Selesai
+                    </button>
+                </div>
+
+                <button onclick="refreshReports()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 hover:text-brand-600 hover:border-brand-300 shadow-2xs transition-all cursor-pointer">
+                    <i id="refreshIcon" data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                    <span>Perbarui</span>
+                </button>
+            </div>
+
+            <!-- Daftar Kartu Laporan Publik -->
+            <div id="publicReportsContainer" class="space-y-3.5">
+                <!-- Diisi dinamis oleh JavaScript -->
+            </div>
+
+            <!-- Catatan Bawah -->
+            <p class="text-center text-[11px] text-slate-500 mt-5">
+                Laporan baru akan tampil di halaman publik setelah diverifikasi oleh tim Sarana &amp; Prasarana sekolah.
+            </p>
+
+            <!-- ==================== 3 KARTU ALUR / FITUR (SESUAI REFERENSI) ==================== -->
+            <div id="tentang" class="mt-14 space-y-4">
+                <!-- Kartu 1 -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200/70 shadow-card hover:border-brand-200 transition-all flex flex-col sm:flex-row sm:items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-500 flex items-center justify-center shrink-0">
+                        <i data-lucide="megaphone" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-display font-bold text-base text-slate-900">Laporkan Kerusakan &amp; Kebutuhan</h3>
+                        <p class="text-xs sm:text-sm text-slate-500 mt-1 leading-relaxed">
+                            Sampaikan kondisi ruang kelas, laboratorium, proyektor, jaringan Wi-Fi, maupun fasilitas umum yang membutuhkan perbaikan atau pengadaan baru.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Kartu 2 -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200/70 shadow-card hover:border-brand-200 transition-all flex flex-col sm:flex-row sm:items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-sky-50 text-sky-500 flex items-center justify-center shrink-0">
+                        <i data-lucide="shield-alert" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-display font-bold text-base text-slate-900">Sampaikan dengan Jelas &amp; Akurat</h3>
+                        <p class="text-xs sm:text-sm text-slate-500 mt-1 leading-relaxed">
+                            Sertakan lokasi ruangan atau unit secara spesifik agar petugas teknisi dapat segera melakukan pengecekan lapangan tanpa kendala.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Kartu 3 -->
+                <div class="bg-white rounded-2xl p-6 border border-slate-200/70 shadow-card hover:border-brand-200 transition-all flex flex-col sm:flex-row sm:items-center gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-500 flex items-center justify-center shrink-0">
+                        <i data-lucide="sparkles" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-display font-bold text-base text-slate-900">Wujudkan Lingkungan Belajar Nyaman</h3>
+                        <p class="text-xs sm:text-sm text-slate-500 mt-1 leading-relaxed">
+                            Setiap laporan dicatat sebagai dasar evaluasi perawatan berkala dan peningkatan mutu sarana prasarana sekolah secara berkelanjutan.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FORMULIR PENGAJUAN / LAPORAN SARPRAS ==================== -->
+    <section id="form-sarpras" class="py-16 sm:py-24 bg-gradient-to-b from-[#f8fbff] to-[#eef6ff]">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Judul Formulir (Rata Tengah Sesuai Referensi) -->
+            <div class="text-center mb-10">
+                <span class="inline-block text-[11px] font-bold tracking-[0.18em] uppercase text-brand-600 mb-2">
+                    SUARAKAN KEBUTUHAN FASILITAS
+                </span>
+                <h2 class="font-display font-extrabold text-3xl sm:text-4xl text-slate-900 tracking-tight">
+                    Formulir <span class="text-brand-500">Sarpras</span>
+                </h2>
+                <p class="text-slate-600 text-xs sm:text-sm mt-2 max-w-lg mx-auto">
+                    Tuliskan laporan kerusakan atau usulan sarana prasarana dengan lengkap melalui formulir di bawah ini.
+                </p>
+            </div>
+
+            <!-- Kotak Form Putih Bersih -->
+            <div class="bg-white rounded-3xl p-6 sm:p-10 shadow-soft border border-slate-200/70">
+                <form id="sarprasForm" class="space-y-5">
+                    
+                    <!-- Nama Lengkap -->
+                    <div>
+                        <label for="nama" class="block text-xs font-bold text-slate-700 mb-1.5">
+                            Nama Lengkap <span class="text-rose-500">*</span>
+                        </label>
+                        <input type="text" id="nama" required placeholder="Contoh: Ahmad Fauzan"
+                            class="w-full px-4 py-3 rounded-xl bg-slate-50/70 border border-slate-200 text-sm text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all">
+                    </div>
+
+                    <!-- Grid 2 Kolom: Peran/Kelas & Jurusan/Unit -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label for="kelas" class="block text-xs font-bold text-slate-700 mb-1.5">
+                                Kelas / Status Pelapor <span class="text-rose-500">*</span>
+                            </label>
+                            <select id="kelas" required
+                                class="w-full px-4 py-3 rounded-xl bg-slate-50/70 border border-slate-200 text-sm text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all">
+                                <option value="Kelas X">Kelas X</option>
+                                <option value="Kelas XI" selected>Kelas XI</option>
+                                <option value="Kelas XII">Kelas XII</option>
+                                <option value="Guru / Wali Kelas">Guru / Wali Kelas</option>
+                                <option value="Staf Tata Usaha">Staf Tata Usaha</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label for="jurusan" class="block text-xs font-bold text-slate-700 mb-1.5">
+                                Jurusan / Unit Kerja <span class="text-rose-500">*</span>
+                            </label>
+                            <select id="jurusan" required
+                                class="w-full px-4 py-3 rounded-xl bg-slate-50/70 border border-slate-200 text-sm text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all">
+                                <option value="TJKT — Teknik Jaringan Komputer">TJKT — Teknik Jaringan Komputer</option>
+                                <option value="PPLG — Pengembangan Perangkat Lunak">PPLG — Pengembangan Perangkat Lunak</option>
+                                <option value="MPLB — Manajemen Perkantoran">MPLB — Manajemen Perkantoran</option>
+                                <option value="AKL — Akuntansi & Keuangan">AKL — Akuntansi &amp; Keuangan</option>
+                                <option value="Fasilitas Umum Sekolah">Fasilitas Umum Sekolah</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Kategori Sarpras -->
+                    <div>
+                        <label for="kategori" class="block text-xs font-bold text-slate-700 mb-1.5">
+                            Kategori Sarana &amp; Prasarana <span class="text-rose-500">*</span>
+                        </label>
+                        <select id="kategori" required
+                            class="w-full px-4 py-3 rounded-xl bg-slate-50/70 border border-slate-200 text-sm text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all">
+                            <option value="Ruang Kelas & Meubelair (Meja, Kursi, Papan)">Ruang Kelas &amp; Meubelair (Meja, Kursi, Papan)</option>
+                            <option value="Laboratorium & Alat Praktik">Laboratorium &amp; Alat Praktik</option>
+                            <option value="Kelistrikan, AC, Proyektor & Jaringan Wi-Fi">Kelistrikan, AC, Proyektor &amp; Jaringan Wi-Fi</option>
+                            <option value="Sanitasi, Toilet & Kebersihan Lingkungan">Sanitasi, Toilet &amp; Kebersihan Lingkungan</option>
+                            <option value="Sarana Olahraga, Ibadah & Perpustakaan">Sarana Olahraga, Ibadah &amp; Perpustakaan</option>
+                        </select>
+                    </div>
+
+                    <!-- Judul / Lokasi Spesifik -->
+                    <div>
+                        <label for="judul" class="block text-xs font-bold text-slate-700 mb-1.5">
+                            Judul Laporan &amp; Lokasi Ruangan <span class="text-rose-500">*</span>
+                        </label>
+                        <input type="text" id="judul" required placeholder="Contoh: Proyektor LCD Mati di Ruang Lab Komputer 2"
+                            class="w-full px-4 py-3 rounded-xl bg-slate-50/70 border border-slate-200 text-sm text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all">
+                    </div>
+
+                    <!-- Detail Keluhan / Usulan -->
+                    <div>
+                        <label for="deskripsi" class="block text-xs font-bold text-slate-700 mb-1.5">
+                            Detail Kondisi / Usulan Perbaikan <span class="text-rose-500">*</span>
+                        </label>
+                        <textarea id="deskripsi" rows="4" required maxlength="500"
+                            placeholder="Jelaskan detail kerusakan, jumlah unit yang terdampak, atau spesifikasi alat yang diusulkan..."
+                            class="w-full px-4 py-3 rounded-xl bg-slate-50/70 border border-slate-200 text-sm text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all resize-y"></textarea>
+                        <div class="flex justify-between items-center mt-1.5 text-[11px] text-slate-400">
+                            <span>Minimal 20 karakter. Gunakan bahasa yang sopan dan jelas.</span>
+                            <span id="charCount">0 / 500</span>
+                        </div>
+                    </div>
+
+                    <!-- Checkbox Persetujuan -->
+                    <div class="flex items-start gap-2.5 pt-1">
+                        <input type="checkbox" id="persetujuan" required checked
+                            class="mt-0.5 w-4 h-4 rounded border-slate-300 text-brand-600 focus:ring-brand-500 cursor-pointer">
+                        <label for="persetujuan" class="text-xs text-slate-600 leading-relaxed cursor-pointer">
+                            Saya menyatakan bahwa informasi yang disampaikan adalah benar sesuai kondisi lapangan dan siap diverifikasi oleh tim Sarpras sekolah.
+                        </label>
+                    </div>
+
+                    <!-- Tombol Submit Gradien Penuh -->
+                    <button type="submit"
+                        class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-brand-400 via-brand-500 to-brand-700 hover:from-brand-500 hover:to-brand-800 text-white font-bold text-sm shadow-soft flex items-center justify-center gap-2 transition-all transform active:scale-[0.99] cursor-pointer">
+                        <span>Kirim Laporan Sarpras</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+
+                    <p class="text-center text-[11px] text-slate-400">
+                        Data pelapor dijaga kerahasiaannya dan hanya digunakan untuk keperluan tindak lanjut perbaikan.
+                    </p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== FOOTER GELAP (SESUAI REFERENSI) ==================== -->
+    <footer class="bg-[#0b2545] text-white pt-12 pb-8">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 pb-8 border-b border-white/10">
+                <div class="flex items-start gap-3.5">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center font-display font-extrabold text-xl text-white shrink-0 shadow-md">
+                        S<span class="text-amber-300 text-sm -mt-2">+</span>
+                    </div>
+                    <div>
+                        <h3 class="font-display font-bold text-sm sm:text-base tracking-wide uppercase">
+                            SARPRAS DIGITAL SEKOLAH
+                        </h3>
+                        <p class="text-xs text-slate-300 mt-1 max-w-md leading-relaxed">
+                            Sistem Layanan Pengaduan &amp; Pengajuan Sarana Prasarana Sekolah. Mewujudkan lingkungan pendidikan yang aman, modern, dan nyaman.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-4 text-xs text-slate-300">
+                    <a href="#beranda" class="hover:text-white transition-colors">Beranda</a>
+                    <a href="#laporan-publik" class="hover:text-white transition-colors">Laporan Publik</a>
+                    <a href="#tentang" class="hover:text-white transition-colors">Alur Layanan</a>
+                    <a href="#form-sarpras" class="hover:text-white transition-colors">Formulir</a>
+                </div>
+            </div>
+
+            <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400">
+                <p>&copy; 2026 Bidang Sarana &amp; Prasarana Sekolah. Hak Cipta Dilindungi.</p>
+                <p>Dibangun untuk transparansi &amp; kenyamanan fasilitas pendidikan.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ==================== MODAL NOTIFIKASI / PESAN ==================== -->
+    <div id="toastModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-100 text-center transform transition-all">
+            <div id="toastIconWrap" class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 mx-auto flex items-center justify-center mb-4">
+                <i data-lucide="check-circle-2" class="w-8 h-8"></i>
+            </div>
+            <h3 id="toastTitle" class="font-display font-extrabold text-xl text-slate-900">Laporan Berhasil Dikirim!</h3>
+            <p id="toastDesc" class="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
+                Terima kasih. Laporan Anda telah masuk ke antrean verifikasi tim Sarana &amp; Prasarana dan langsung ditampilkan pada daftar pantauan.
+            </p>
+            <button onclick="closeToastModal()" class="mt-6 w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-sm transition-colors cursor-pointer">
+                Mengerti
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL LOGIN ADMIN ==================== -->
+    <div id="adminModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 backdrop-blur-xs p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 sm:p-7 shadow-2xl border border-slate-100 relative">
+            <button onclick="closeAdminModal()" class="absolute top-4 right-4 p-2 rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-600 cursor-pointer">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center mb-4">
+                <i data-lucide="shield-check" class="w-6 h-6"></i>
+            </div>
+            <h3 class="font-display font-extrabold text-lg text-slate-900">Login Admin Sarpras</h3>
+            <p class="text-xs text-slate-500 mt-1">Khusus Waka Sarpras &amp; Staf Teknisi Sekolah.</p>
+            
+            <form onsubmit="handleAdminLogin(event)" class="mt-5 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">NIP / Username</label>
+                    <input type="text" required placeholder="admin.sarpras" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:bg-white focus:outline-none focus:border-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Kata Sandi</label>
+                    <input type="password" required placeholder="••••••••" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:bg-white focus:outline-none focus:border-brand-500">
+                </div>
+                <button type="submit" class="w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm transition-colors cursor-pointer">
+                    Masuk ke Dashboard
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== SCRIPT INTERAKTIVITAS ==================== -->
+    <script>
+        // Inisialisasi ikon Lucide
+        lucide.createIcons();
+
+        // Data awal laporan sarana & prasarana publik
+        let reportsData = [
+            {
+                id: 'SRP-001',
+                judul: 'Perbaikan AC Bocor & Kurang Dingin di Ruang Lab TJKT 1',
+                kategori: 'Kelistrikan, AC, Proyektor & Jaringan Wi-Fi',
+                pelapor: 'Rizky Pratama (XI TJKT)',
+                tanggal: '18 Nov 2026',
+                deskripsi: 'Unit AC bagian depan meneteskan air saat jam pelajaran praktik berlangsung dan suhu ruangan tidak dingin.',
+                status: 'Diproses',
+                tanggapan: 'Teknisi AC dijadwalkan melakukan pencucian dan pengisian freon sore ini.'
+            },
+            {
+                id: 'SRP-002',
+                judul: 'Penggantian 4 Kursi Siswa Patah di Kelas XI PPLG 2',
+                kategori: 'Ruang Kelas & Meubelair (Meja, Kursi, Papan)',
+                pelapor: 'Nadia Putri (XI PPLG)',
+                tanggal: '16 Nov 2026',
+                deskripsi: 'Terdapat 4 unit kursi kayu yang sandarannya patah sehingga kurang aman digunakan siswa.',
+                status: 'Selesai',
+                tanggapan: '4 unit kursi baru dari gudang sarpras telah ditempatkan di kelas XI PPLG 2.'
+            },
+            {
+                id: 'SRP-003',
+                judul: 'Penambahan Access Point Wi-Fi Area Selasar Lantai 2',
+                kategori: 'Kelistrikan, AC, Proyektor & Jaringan Wi-Fi',
+                pelapor: 'Budi Santoso, S.Kom (Guru)',
+                tanggal: '15 Nov 2026',
+                deskripsi: 'Sinyal internet untuk pembelajaran digital di kelas ujung lantai 2 sering terputus.',
+                status: 'Diproses',
+                tanggapan: 'Perangkat router tambahan sudah disetujui dan sedang dalam tahap penarikan kabel LAN.'
+            }
+        ];
+
+        let currentFilter = 'all';
+
+        // Render daftar laporan publik
+        function renderReports() {
+            const container = document.getElementById('publicReportsContainer');
+            const filtered = currentFilter === 'all' 
+                ? reportsData 
+                : reportsData.filter(item => item.status === currentFilter);
+
+            // Update statistik
+            document.getElementById('statTotal').textContent = reportsData.length;
+            document.getElementById('statProses').textContent = reportsData.filter(r => r.status === 'Diproses').length;
+            document.getElementById('statSelesai').textContent = reportsData.filter(r => r.status === 'Selesai').length;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="bg-white rounded-2xl p-8 border border-dashed border-slate-300 text-center">
+                        <p class="font-display font-bold text-slate-800 text-sm">Belum ada laporan pada kategori ini</p>
+                        <p class="text-xs text-slate-500 mt-1">Silakan pilih filter lain atau kirimkan laporan sarana prasarana baru.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map(item => {
+                const isDone = item.status === 'Selesai';
+                const badgeClass = isDone 
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200/80' 
+                    : 'bg-amber-50 text-amber-700 border-amber-200/80';
+                const dotClass = isDone ? 'bg-emerald-500' : 'bg-amber-500 animate-pulse';
+
+                return `
+                    <div class="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200/80 shadow-card hover:border-brand-300 transition-all">
+                        <div class="flex flex-wrap items-start justify-between gap-2 mb-2.5">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-0.5 rounded-lg bg-brand-50 text-brand-700 text-[11px] font-bold">
+                                    ${item.id}
+                                </span>
+                                <span class="text-[11px] font-medium text-slate-400">• ${item.tanggal}</span>
+                            </div>
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold border ${badgeClass}">
+                                <span class="w-1.5 h-1.5 rounded-full ${dotClass}"></span>
+                                ${item.status}
+                            </span>
+                        </div>
+
+                        <h3 class="font-display font-bold text-base text-slate-900 leading-snug">
+                            ${item.judul}
+                        </h3>
+                        <p class="text-xs text-slate-600 mt-1.5 leading-relaxed">
+                            ${item.deskripsi}
+                        </p>
+
+                        <div class="mt-4 pt-3.5 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px]">
+                            <div class="flex items-center gap-2 text-slate-500">
+                                <span class="font-semibold text-slate-700">${item.pelapor}</span>
+                                <span>•</span>
+                                <span class="truncate max-w-[220px] sm:max-w-xs">${item.kategori}</span>
+                            </div>
+                            <div class="text-brand-700 font-medium bg-brand-50/70 px-3 py-1 rounded-lg">
+                                <span class="font-bold">Info Sarpras:</span> ${item.tanggapan}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Filter laporan
+        function filterReports(status) {
+            currentFilter = status;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.dataset.filter === status) {
+                    btn.className = 'filter-btn active px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-brand-600 text-white shadow-2xs transition-all cursor-pointer';
+                } else {
+                    btn.className = 'filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-600 border border-slate-200 hover:border-brand-300 transition-all cursor-pointer';
+                }
+            });
+            renderReports();
+        }
+
+        // Animasi tombol perbarui
+        function refreshReports() {
+            const icon = document.getElementById('refreshIcon');
+            icon.classList.add('animate-spin');
+            setTimeout(() => {
+                icon.classList.remove('animate-spin');
+                renderReports();
+            }, 450);
+        }
+
+        // Hitung karakter textarea
+        const deskripsiInput = document.getElementById('deskripsi');
+        const charCount = document.getElementById('charCount');
+        deskripsiInput.addEventListener('input', () => {
+            charCount.textContent = `${deskripsiInput.value.length} / 500`;
+        });
+
+        // Submit Formulir Sarpras
+        document.getElementById('sarprasForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nama = document.getElementById('nama').value.trim();
+            const kelas = document.getElementById('kelas').value;
+            const jurusan = document.getElementById('jurusan').value.split('—')[0].trim();
+            const kategori = document.getElementById('kategori').value;
+            const judul = document.getElementById('judul').value.trim();
+            const deskripsi = document.getElementById('deskripsi').value.trim();
+
+            if (deskripsi.length < 20) {
+                showToast(
+                    'Deskripsi Terlalu Singkat',
+                    'Mohon jelaskan detail kondisi atau lokasi sarana prasarana minimal 20 karakter agar mudah ditindaklanjuti.',
+                    false
+                );
+                return;
+            }
+
+            const newNumber = String(reportsData.length + 1).padStart(3, '0');
+            const newReport = {
+                id: `SRP-${newNumber}`,
+                judul: judul,
+                kategori: kategori,
+                pelapor: `${nama} (${kelas} ${jurusan})`,
+                tanggal: 'Baru saja',
+                deskripsi: deskripsi,
+                status: 'Diproses',
+                tanggapan: 'Laporan diterima sistem & menunggu pengecekan teknisi sarpras.'
+            };
+
+            reportsData.unshift(newReport);
+            renderReports();
+            this.reset();
+            charCount.textContent = '0 / 500';
+
+            showToast(
+                'Laporan Sarpras Terkirim!',
+                `Nomor tiket Anda adalah ${newReport.id}. Laporan telah tercatat dan dapat dipantau pada bagian Laporan Publik.`,
+                true
+            );
+        });
+
+        // Toggle Menu Mobile
+        document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Modal Toast Helper
+        function showToast(title, desc, isSuccess = true) {
+            const modal = document.getElementById('toastModal');
+            const iconWrap = document.getElementById('toastIconWrap');
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastDesc').textContent = desc;
+
+            if (isSuccess) {
+                iconWrap.className = 'w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 mx-auto flex items-center justify-center mb-4';
+                iconWrap.innerHTML = '<i data-lucide="check-circle-2" class="w-8 h-8"></i>';
+            } else {
+                iconWrap.className = 'w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 mx-auto flex items-center justify-center mb-4';
+                iconWrap.innerHTML = '<i data-lucide="alert-circle" class="w-8 h-8"></i>';
+            }
+            lucide.createIcons();
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeToastModal() {
+            const modal = document.getElementById('toastModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Modal Admin Helper
+        function openAdminModal() {
+            const modal = document.getElementById('adminModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeAdminModal() {
+            const modal = document.getElementById('adminModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            closeAdminModal();
+            showToast(
+                'Mode Simulasi Admin',
+                'Autentikasi berhasil! Pada versi penuh, halaman ini akan mengarahkan Waka Sarpras ke panel verifikasi dan update status perbaikan.',
+                true
+            );
+        }
+
+        // Render awal saat halaman dimuat
+        renderReports();
+    </script>
+</body>
+</html>
